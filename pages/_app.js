@@ -1,7 +1,23 @@
-import '../styles/globals.css'
+import { useEffect } from "react";
+import "../styles/globals.css";
+
+const liffId = process.env.NEXT_PUBLIC_LIFF_ID;
+console.log("liffIdliffIdliffIdliffId;", liffId);
 
 function MyApp({ Component, pageProps }) {
-  return <Component {...pageProps} />
+  useEffect(async () => {
+    const liff = (await import("@line/liff")).default;
+    try {
+      await liff.init({ liffId });
+    } catch (error) {
+      console.error("liff init error", error.message);
+    }
+    if (!liff.isLoggedIn()) {
+      liff.login();
+    }
+  });
+
+  return <Component {...pageProps} />;
 }
 
-export default MyApp
+export default MyApp;
